@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_pgf_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootjuan14:6
+      MYSQL_DATABASE: pgf_db_matthew
+      MYSQL_USER: root
+      MYSQL_PASSWORD: juan14:6
+    volumes:
+      - ./mysql:/var/lib/mysql
+    ports:
+      - '3307:3306'
