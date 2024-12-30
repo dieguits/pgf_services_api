@@ -3,34 +3,32 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { UsersService } from 'src/users/users.service';
 import { RegisterDto } from './dto/register.dto';
 
+import { JwtService } from '@nestjs/jwt';
 import * as bcryptjs from 'bcryptjs';
 import { LoginDto } from './dto/login.dto';
-import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userService: UsersService,
+    private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
   ) {}
 
   async register({ name, last_name, email, password, role }: RegisterDto) {
-    const user = await this.userService.findOneByEmail(email);
+    const user = await this.usersService.findOneByEmail(email);
 
     if (user) {
-      throw new BadRequestException('user already exist!');
+      throw new BadRequestException(['email is already taken.']);
     }
 
-    const passHashed = await bcryptjs.hash(password, 12);
-
-    await this.userService.create({
+    await this.usersService.create({
       name,
       last_name,
       email,
-      password: passHashed,
+      password: await bcryptjs.hash(password, 10),
       role,
     });
 
@@ -41,19 +39,17 @@ export class AuthService {
   }
 
   async login({ email, password }: LoginDto) {
-    const user = await this.userService.findByEmailWithPassword(email);
-
+    const user = await this.usersService.findByEmailWithPassword(email);
     if (!user) {
-      throw new UnauthorizedException('Info not valid');
+      throw new UnauthorizedException('email is wrong');
     }
 
-    const isPassValid = await bcryptjs.compare(password, user.password);
-    if (!isPassValid) {
-      throw new UnauthorizedException('Info pass not valid');
+    const isPasswordValid = await bcryptjs.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('password is wrong');
     }
 
-    const payload = { email: user.email, role: user.role.id };
-
+    const payload = { id: user.id, email: user.email, role: user.role };
     const token = await this.jwtService.signAsync(payload);
 
     return {
@@ -63,13 +59,6 @@ export class AuthService {
   }
 
   async profile({ email, role }: { email: string; role: string }) {
-    const user = await this.userService.findOneByEmail(email);
-    return {
-      id: user.id,
-      name: user.name,
-      last_name: user.last_name,
-      email: user.email,
-      role: user.role.id,
-    };
+    return await this.usersService.findOneByEmail(email);
   }
 }

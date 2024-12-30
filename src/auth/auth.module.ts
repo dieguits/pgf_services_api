@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthService } from './auth.service';
+import { UsersModule } from 'src/users/users.module';
 import { AuthController } from './auth.controller';
-import { UsersModule } from '../users/users.module';
+import { AuthService } from './auth.service';
+// import { jwtConstants } from './constants/jwt.constant';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -17,6 +18,11 @@ import { UsersModule } from '../users/users.module';
       }),
       inject: [ConfigService],
     }),
+    // JwtModule.register({
+    //   global: true,
+    //   secret: jwtConstants.secret,
+    //   signOptions: { expiresIn: '1d' },
+    // }),
   ],
   controllers: [AuthController],
   providers: [AuthService],
