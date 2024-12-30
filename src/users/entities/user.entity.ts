@@ -1,17 +1,16 @@
-import { Role } from '../../roles/entities/role.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Role } from '../../common/enums/rol.enum';
 
 @Entity()
 export class User {
-  // @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn()
   @Column({ primary: true, generated: true, unique: true })
   id: number;
 
@@ -27,6 +26,9 @@ export class User {
   @Column({ nullable: false, select: false })
   password: string;
 
+  @Column({ type: 'enum', default: Role.USER, enum: Role })
+  role: Role;
+
   @CreateDateColumn()
   createdDate: Date;
 
@@ -35,9 +37,4 @@ export class User {
 
   @DeleteDateColumn()
   deteledAt: Date;
-
-  @ManyToOne(() => Role, (role) => role.id, {
-    eager: true,
-  })
-  role: Role;
 }

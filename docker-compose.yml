@@ -7,7 +7,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: rootjuan14:6
       MYSQL_DATABASE: pgf_db_matthew
-      MYSQL_USER: root
+      MYSQL_USER: pgf_user_root
       MYSQL_PASSWORD: juan14:6
     volumes:
       - ./mysql:/var/lib/mysql

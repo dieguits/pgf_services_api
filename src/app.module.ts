@@ -1,15 +1,18 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from './users/users.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { RolesModule } from './roles/roles.module';
-import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
+import { BreedsModule } from './breeds/breeds.module';
+import { CatsModule } from './cats/cats.module';
+import { UsersModule } from './users/users.module';
+import { FamiliesModule } from './families/families.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.MYSQL_HOST,
@@ -20,11 +23,20 @@ import { ConfigModule } from '@nestjs/config';
       autoLoadEntities: true,
       synchronize: true,
       ssl: process.env.MYSQL_SSL === 'true',
-      // extra: { process.env.MYSQL_SSL === 'true' ? { rejectUnauthorized: false } : null },
+      extra: {
+        ssl:
+          process.env.MYSQL_SSL === 'true'
+            ? {
+                rejectUnauthorized: false,
+              }
+            : null,
+      },
     }),
+    CatsModule,
+    BreedsModule,
     UsersModule,
-    RolesModule,
     AuthModule,
+    FamiliesModule,
   ],
   controllers: [],
   providers: [],

@@ -1,78 +1,50 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
-import { Role } from 'src/roles/entities/role.entity';
+import { Role } from 'src/common/enums/rol.enum';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-
-    @InjectRepository(Role)
-    private readonly roleRepository: Repository<Role>,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
-    const role = await this.roleRepository.findOneBy({
-      id: createUserDto.role,
-    });
-
-    if (!role) {
-      throw new BadRequestException('Role not found');
-    }
-
+  create(createUserDto: CreateUserDto) {
     const user = this.userRepository.create({
       ...createUserDto,
-      role,
+      role: createUserDto.role === Role.ADMIN ? Role.ADMIN : Role.USER,
     });
-
-    await this.userRepository.save(user);
-
-    return {
-      name: user.name,
-      email: user.email,
-    };
+    return this.userRepository.save(user);
   }
 
-  async findOneByEmail(email: string) {
-    return await this.userRepository.findOneBy({ email });
+  findOneByEmail(email: string) {
+    return this.userRepository.findOneBy({ email });
   }
 
-  async findByEmailWithPassword(email: string) {
-    return await this.userRepository.findOne({
+  findByEmailWithPassword(email: string) {
+    return this.userRepository.findOne({
       where: { email },
       select: ['id', 'name', 'email', 'password', 'role'],
     });
   }
 
-  async findAll() {
-    return await this.userRepository.find();
+  findAll() {
+    return this.userRepository.find();
   }
 
-  async findOne(id: number) {
-    return this.userRepository.findOneBy({ id });
+  findOne(id: number) {
+    return `This action returns a #${id} user`;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    const role = await this.roleRepository.findOneBy({
-      id: updateUserDto.role,
-    });
-
-    if (!role) {
-      throw new BadRequestException('Role not found');
-    }
-
-    return await this.userRepository.update(id, {
-      ...updateUserDto,
-      role,
-    });
+  update(id: number, updateUserDto: UpdateUserDto) {
+    return `This action updates a #${id} user`;
   }
 
-  async remove(id: number) {
-    return await this.userRepository.softDelete({ id });
+  remove(id: number) {
+    return `This action removes a #${id} user`;
   }
 }
