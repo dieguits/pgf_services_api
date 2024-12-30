@@ -1,8 +1,10 @@
+import { Member } from 'src/members/entities/member.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   UpdateDateColumn,
 } from 'typeorm';
 
@@ -27,5 +29,8 @@ export class Family {
   updatedDate: Date;
 
   @DeleteDateColumn()
-  deteledAt: Date;
+  deletedAt: Date;
+
+  @OneToMany(() => Member, (member) => member.family)
+  members: Member[];
 }
