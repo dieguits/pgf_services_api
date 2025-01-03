@@ -7,6 +7,7 @@ import { CatsModule } from './cats/cats.module';
 import { UsersModule } from './users/users.module';
 import { FamiliesModule } from './families/families.module';
 import { MembersModule } from './members/members.module';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { MembersModule } from './members/members.module';
     AuthModule,
     FamiliesModule,
     MembersModule,
+    EventsModule,
   ],
   controllers: [],
   providers: [],

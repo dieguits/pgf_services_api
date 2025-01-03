@@ -13,6 +13,7 @@ import { RegisterDto } from './dto/register.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Auth(Role.ADMIN)
   @Post('register')
   register(
     @Body()
