@@ -1,12 +1,13 @@
 import { IsNumber, MinLength } from 'class-validator';
+import { Attendance } from 'src/attendances/entities/attendance.entity';
 import { Gender } from 'src/common/enums/gender.enum';
 import { Family } from 'src/families/entities/family.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  Int32,
   ManyToOne,
+  OneToMany,
   UpdateDateColumn,
 } from 'typeorm';
 
@@ -51,4 +52,7 @@ export class Member {
 
   @UpdateDateColumn()
   date_updated: Date;
+
+  @OneToMany(() => Attendance, (att) => att.member)
+  attendances: Attendance[];
 }
