@@ -11,5 +11,6 @@ import { FamiliesService } from '../families/families.service';
   imports: [TypeOrmModule.forFeature([Member]), FamiliesModule, AuthModule],
   controllers: [MembersController],
   providers: [MembersService, FamiliesService],
+  exports: [TypeOrmModule],
 })
 export class MembersModule {}

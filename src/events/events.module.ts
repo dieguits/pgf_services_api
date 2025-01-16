@@ -9,5 +9,6 @@ import { AuthModule } from 'src/auth/auth.module';
   imports: [TypeOrmModule.forFeature([Event]), AuthModule],
   controllers: [EventsController],
   providers: [EventsService],
+  exports: [TypeOrmModule],
 })
 export class EventsModule {}
