@@ -25,7 +25,6 @@ export class FamiliesController {
     @Body() createFamilyDto: CreateFamilyDto,
     @ActiveUser() user: UserActiveInterface,
   ) {
-    console.log('Arriving here to families:::: ', user);
     return this.familiesService.create(createFamilyDto, user);
   }
 

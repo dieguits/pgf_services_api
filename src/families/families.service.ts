@@ -42,14 +42,20 @@ export class FamiliesService {
   ) {
     await this.findOne(id);
 
-    return await this.familyRepository.update(id, {
+    await this.familyRepository.update(id, {
       ...updateFamilyDto,
       user_updated: user.id,
     });
+
+    return {
+      id: id,
+      name: updateFamilyDto.name,
+    };
   }
 
   async remove(id: number) {
-    await this.findOne(id);
-    return await this.familyRepository.softDelete({ id });
+    const family = await this.findOne(id);
+    await this.familyRepository.softDelete({ id });
+    return family;
   }
 }

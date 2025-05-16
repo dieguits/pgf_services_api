@@ -22,7 +22,8 @@ export class CreateMemberDto {
   email?: string;
 
   @IsString()
-  phone_number: string;
+  @IsOptional()
+  phone_number?: string;
 
   @IsString()
   @MinLength(4)
@@ -30,7 +31,7 @@ export class CreateMemberDto {
 
   @IsString()
   @IsOptional()
-  dob: string;
+  dob?: string;
 
   @IsInt()
   @IsPositive()

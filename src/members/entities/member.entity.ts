@@ -5,6 +5,7 @@ import { Family } from 'src/families/entities/family.entity';
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
@@ -52,6 +53,9 @@ export class Member {
 
   @UpdateDateColumn()
   date_updated: Date;
+
+  @DeleteDateColumn()
+  date_deleted: Date;
 
   @OneToMany(() => Attendance, (att) => att.member)
   attendances: Attendance[];

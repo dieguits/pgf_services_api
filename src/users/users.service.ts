@@ -1,10 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { Role } from 'src/common/enums/rol.enum';
+import { UserActiveInterface } from 'src/common/interfaces/user-active.interface';
 
 @Injectable()
 export class UsersService {
@@ -46,11 +51,34 @@ export class UsersService {
     return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(
+    id: number,
+    updateUserDto: UpdateUserDto,
+    user: UserActiveInterface,
+  ) {
+    await this.findOne(id);
+
+    if (user.role !== 'admin' && user.id !== id) {
+      throw new UnauthorizedException();
+    }
+
+    const userUpdated = await this.userRepository.update(id, {
+      ...updateUserDto,
+      role: updateUserDto.role === 'admin' ? Role.ADMIN : Role.USER,
+    });
+
+    return {
+      id: id,
+      name: updateUserDto.name,
+      last_name: updateUserDto.last_name,
+      email: updateUserDto.email,
+      role: updateUserDto.role,
+    };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    const user = await this.findOne(id);
+    await this.userRepository.softDelete({ id });
+    return user;
   }
 }

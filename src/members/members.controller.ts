@@ -52,7 +52,10 @@ export class MembersController {
 
   @Auth(Role.ADMIN)
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.membersService.remove(id);
+  async remove(
+    @Param('id') id: number,
+    @ActiveUser() user: UserActiveInterface,
+  ) {
+    return await this.membersService.remove(id, user);
   }
 }

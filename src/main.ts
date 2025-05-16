@@ -17,7 +17,16 @@ async function bootstrap() {
   );
 
   // Falto agregar CORS
-  app.enableCors();
+  app.enableCors({
+    origin: ['http://localhost:4200'],
+    methods: 'GET,POST,PUT,DELETE,PATCH',
+    credentials: true,
+  });
+
+  // app.enableCors({
+  //   origin: 'http://localhost:4200', // Ensure this matches your Angular app URL
+  //   credentials: true,
+  // });
 
   const config = new DocumentBuilder()
     .setTitle('Cats example')
@@ -29,6 +38,6 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
 
   console.log('running on port ', process.env.PORT);
-  await app.listen(parseInt(process.env.PORT) || 8000);
+  await app.listen(parseInt(process.env.PORT) || 3000);
 }
 bootstrap();

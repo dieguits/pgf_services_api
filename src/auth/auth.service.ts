@@ -24,7 +24,7 @@ export class AuthService {
       throw new BadRequestException(['email is already taken.']);
     }
 
-    await this.usersService.create({
+    const userRegistered = await this.usersService.create({
       name,
       last_name,
       email,
@@ -33,8 +33,10 @@ export class AuthService {
     });
 
     return {
+      id: userRegistered.id,
       name,
       email,
+      createdDate: userRegistered.createdDate,
     };
   }
 
@@ -55,6 +57,9 @@ export class AuthService {
     return {
       token,
       email,
+      id: user.id,
+      role: user.role,
+      name: user.name,
     };
   }
 

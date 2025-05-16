@@ -34,8 +34,8 @@ export class MembersService {
     return this.memberRepository.find();
   }
 
-  findOne(id: number) {
-    const member = this.memberRepository.findOneBy({ id });
+  async findOne(id: number) {
+    const member = await this.memberRepository.findOneBy({ id });
 
     if (!member) {
       throw new BadRequestException('Member not found');
@@ -53,18 +53,24 @@ export class MembersService {
 
     const family = await this.validateFamily(updateMemberDto.family);
     const dobFormatted = new Date(updateMemberDto.dob);
-    return this.memberRepository.update(id, {
+    await this.memberRepository.update(id, {
       ...updateMemberDto,
       family: family,
       dob: dobFormatted,
       user_updated: user.id,
     });
+
+    const member = await this.findOne(id);
+
+    return member;
   }
 
-  async remove(id: number) {
+  async remove(id: number, user: UserActiveInterface) {
     await this.findOne(id);
 
-    return this.memberRepository.softDelete({ id });
+    const action = await this.memberRepository.softDelete({ id });
+
+    return action.affected === 1 ? id : 0;
   }
 
   private async validateFamily(familyId: number) {
